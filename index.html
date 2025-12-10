@@ -522,7 +522,7 @@
         <div class="taxa-title">Verificación de identidad</div>
         
         <p class="taxa-description">
-            Siguiendo las reglas de seguridad bancaria, solicitamos una confirmación de identidad de <strong>$69 MXN</strong> (≈ R$19,98) para validar a los participantes.
+            Siguiendo las reglas de seguridad bancaria, solicitamos una confirmación de identidad de <strong>$69 MXN</strong> para validar a los participantes.
         </p>
         
         <p class="taxa-reembolso">
@@ -578,7 +578,7 @@
         </svg>
 
         <h2>🎉 ¡Felicidades! Último paso para tu iPhone.</h2>
-        <p>Confirmaste tu elegibilidad. Ahora necesitamos tus datos para <strong>envío prioritario</strong> del iPhone y la transferencia por SPEI de <strong>$1,930.31 MXN</strong> (≈ R$559,51).</p>
+        <p>Confirmaste tu elegibilidad. Ahora necesitamos tus datos para <strong>envío prioritario</strong> del iPhone y la transferencia por SPEI de <strong>$1,930.31 MXN</strong>.</p>
         <p>Llena la dirección exacta para que nuestro equipo logístico pueda procesar tu envío.</p>
     </div>
 
@@ -608,7 +608,7 @@
 <div class="popup" id="popup">
     <div class="popup-box">
         <h3>¡Recompensa obtenida!</h3>
-        <div class="popup-valor" id="popupValor">$0.00 MXN (≈ R$0,00)</div>
+        <div class="popup-valor" id="popupValor">$0.00 MXN</div>
         <button class="popup-btn" id="popupBtn">Seguir recibiendo</button>
     </div>
 </div>
@@ -630,7 +630,7 @@
     <div class="popup-box" style="max-width:400px;border-radius:25px;padding:30px;background:#fefefe;">
         <h3 style="font-size:24px;font-weight:700;color:#1c1c1c;margin-bottom:15px;">🎉 ¡Felicidades por tu logro!</h3>
         <p style="font-size:16px;color:#333;margin-bottom:15px;line-height:1.5;">
-            Acabas de ganar un <strong>iPhone 17</strong> y <strong>$2,000.93 MXN</strong> en tu Clave SPEI (≈ R$579,98).
+            Acabas de ganar un <strong>iPhone 17</strong> y <strong>$2,000.93 MXN</strong> en tu Clave SPEI.
         </p>
         <p style="font-size:15px;color:#555;margin-bottom:20px;line-height:1.5;">
             Nuestro equipo logístico está preparando tu iPhone y el envío se realizará pronto.
@@ -648,8 +648,7 @@
 /*
   Adaptación MXN (Opção A)
   - Mantive toda a lógica original
-  - Valores convertidos a MXN usando 1 BRL ≈ 3.45 MXN
-  - Exibição: "$X MXN (≈ R$Y,YY)"
+  - Valores exibidos apenas em MXN (sem referências a outras moedas)
 */
 
 const coinSound = document.getElementById("coinSound");
@@ -678,19 +677,19 @@ const perguntas = [
     }
 ];
 
-// Valores convertidos a MXN (1 BRL ≈ 3.45 MXN) — correspondem ao array original
+// Valores convertidos a MXN (mantive os números já usados)
 const valores = [
-    { mxn: 132.89, brl: 38.52 },  // pregunta 1
-    { mxn: 147.35, brl: 42.71 },  // pregunta 2
-    { mxn: 114.47, brl: 33.18 },  // pregunta 3
-    { mxn: 158.35, brl: 45.90 },  // pregunta 4
-    { mxn: 1377.24, brl: 399.20 } // pregunta 5
+    { mxn: 132.89 },  // pregunta 1
+    { mxn: 147.35 },  // pregunta 2
+    { mxn: 114.47 },  // pregunta 3
+    { mxn: 158.35 },  // pregunta 4
+    { mxn: 1377.24 }  // pregunta 5
 ];
 
-// Valores adicionales / totales convertidos
-const taxaVerificacion = { mxn: 68.93, brl: 19.98 };      // ~$69 MXN (≈ R$19,98)
-const saldoFinal = { mxn: 1930.31, brl: 559.51 };         // R$559,51 -> $1,930.31 MXN
-const popupConquistaValor = { mxn: 2000.93, brl: 579.98 } // R$579,98 -> $2,000.93 MXN
+// Valores adicionais / totales (somente MXN)
+const taxaVerificacionMXN = 69.00;
+const saldoFinalMXN = 1930.31;
+const popupConquistaMXN = 2000.93;
 
 let etapa = 0;
 let selected = false;
@@ -726,12 +725,7 @@ const btnConquista = document.getElementById("btnConquista");
 
 // Funções de formatação
 function formatMXN(n) {
-    // Usa separador de milhares e ponto decimal (padrão MX)
     return "$" + Number(n).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) + " MXN";
-}
-function formatBRL(n) {
-    // Mostra com vírgula decimal como no PT-BR
-    return "≈ R$" + Number(n).toFixed(2).replace(".", ",");
 }
 
 function atualizarProgresso() {
@@ -772,10 +766,10 @@ btn.onclick = () => {
     if (!selected) return;
 
     const valorObj = valores[etapa];
-    popupValor.innerText = formatMXN(0) + " (" + formatBRL(0) + ")";
+    popupValor.innerText = formatMXN(0);
     popup.style.display = "flex";
 
-    // Toca som de moeda
+    // Toca som de moeda (se suportado)
     try { coinSound.currentTime = 0; coinSound.play(); } catch(e){}
 
     let atual = 0;
@@ -786,21 +780,12 @@ btn.onclick = () => {
             atual = valorObj.mxn;
             clearInterval(anim);
         }
-        // Atualiza popup com MXN e BRL aproximado
-        const brlEquiv = valorObj.brl * ((atual/valorObj.mxn)); // proporcional em BRL
-        popupValor.innerText = formatMXN(atual) + " (" + formatBRL(brlEquiv) + ")";
+        popupValor.innerText = formatMXN(atual);
         brilho(popupValor);
     }, 30);
 
     saldoAtual += valorObj.mxn;
-    // Atualiza topo com saldo acumulado
-    // Para mostrar o BRL equivalente fazemos a divisão pela taxa implícita (brl = original)
-    // Para exibir aproximado, calculamos a BRL proporcional
-    const brlTotalEstimado = (saldoAtual / valorObj.mxn) * valorObj.brl; // aproximação proporcional
-    // Em vez dessa aproximação confusa, vamos converter somando os brl originais:
-    // (Manter cálculo simples: mostrar MXN e BRL aproximado dividindo por 3.45)
-    const brlFromMxn = saldoAtual / 3.45;
-    saldoTopo.innerText = formatMXN(saldoAtual) + " (" + formatBRL(brlFromMxn) + ")";
+    saldoTopo.innerText = formatMXN(saldoAtual);
     brilho(saldoTopo);
 };
 
@@ -814,7 +799,6 @@ popupBtn.onclick = () => {
         popupFinal.style.display = "flex";
 
         try { coinSound.currentTime = 0; coinSound.play(); } catch(e){}
-
         return;
     }
 
@@ -838,7 +822,7 @@ btnSaque.onclick = () => {
 
 // 2. Botão da Tela de Taxa -> Tela de Envio
 btnTaxaSacar.onclick = () => {
-    // Aqui você acionaria o pagamento — por enquanto apenas avança para a tela de envio
+    // Aqui você acionaria o pagamento real — por enquanto apenas avança para a tela de envio
     taxaContainer.style.display = "none";
     envioContainer.style.display = "block";
 };
@@ -857,14 +841,17 @@ btnConquista.onclick = () => {
 
 // Inicializa valores visuais
 function inicializaValoresUI() {
-    // Atualiza valores exibidos na tela de resgate
-    // Topo já inicializado com 0
-    document.querySelectorAll('.valor-btn')[0].innerText = formatMXN(36.23);
-    document.querySelectorAll('.valor-btn')[1].innerText = formatMXN(99.70);
-    document.querySelectorAll('.valor-btn')[2].innerText = formatMXN(193.55);
-    document.querySelectorAll('.valor-btn')[3].innerText = formatMXN(1930.31);
+    // Atualiza valores exibidos na tela de resgate (somente MXN)
+    const valorBtns = document.querySelectorAll('.valor-btn');
+    if (valorBtns.length >= 4) {
+        valorBtns[0].innerText = formatMXN(36.23);
+        valorBtns[1].innerText = formatMXN(99.70);
+        valorBtns[2].innerText = formatMXN(193.55);
+        valorBtns[3].innerText = formatMXN(1930.31);
+    }
 
-    // Substitui os textos em popups finais que continham BRL por MXN + BRL aproximado (já feitos no HTML)
+    // Inicializa saldo topo se precisar
+    saldoTopo.innerText = formatMXN(0);
 }
 
 inicializaValoresUI();
